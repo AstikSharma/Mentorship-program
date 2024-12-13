@@ -14,9 +14,6 @@ node_modules/
 dist/
 build/
 
-# Vite cache (for frontend only)
-.vite/
-
 # dotenv environment variables (DO NOT commit .env files)
 .env
 .env.local
@@ -55,9 +52,4 @@ Thumbs.db
 # Ignore database files (if you use SQLite or similar)
 *.db
 *.sqlite
-
-# Ignore Docker files (if applicable)
-docker-compose.yml
-Dockerfile
-*.env.docker
   
