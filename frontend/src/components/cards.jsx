@@ -15,7 +15,7 @@ export default function MultiActionAreaCard({ profile, initialRequestSent, handl
   const handleConnect = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/api/users/connections",
+        `${import.meta.env.VITE_BACKEND_URL}/connections`,
         { receiverId: profile.user_id },
         {
           headers: {

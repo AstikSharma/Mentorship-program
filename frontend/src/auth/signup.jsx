@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +10,7 @@ function Signup() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +25,7 @@ function Signup() {
     setLoading(true);
   
     try {
-      const response = await axios.post("http://localhost:5000/api/users/register", {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/register`, {
         username,
         email,
         password,

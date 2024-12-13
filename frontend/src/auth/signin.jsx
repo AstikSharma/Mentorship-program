@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable react/prop-types */
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -21,12 +22,10 @@ function Signin({ setIsAuthenticated }) {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/users/login", {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, {
         username,
         password,
-      });
-
-      // Login successful: store the token, update auth state, and redirect
+      });     
       localStorage.setItem("token", response.data.token);
       setIsAuthenticated(true); // Update authentication state
       setLoading(false);

@@ -21,7 +21,7 @@ export default function Header() {
     const fetchProfileImage = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/users/profile/image",
+          `${import.meta.env.VITE_BACKEND_URL}/profile/image`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -45,7 +45,7 @@ export default function Header() {
     const fetchNotifications = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/users/notifications",
+          `${import.meta.env.VITE_BACKEND_URL}/notifications`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

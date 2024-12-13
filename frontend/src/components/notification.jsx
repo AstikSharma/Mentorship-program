@@ -9,7 +9,7 @@ export default function Notifications() {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users/notifications", {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/notifications`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -27,7 +27,7 @@ export default function Notifications() {
 
   const markAsRead = async (id) => {
     try {
-      await axios.put(`http://localhost:5000/api/users/notifications/${id}/read`, {}, {
+      await axios.put(`${import.meta.env.VITE_BACKEND_URL}/notifications/${id}/read`, {}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

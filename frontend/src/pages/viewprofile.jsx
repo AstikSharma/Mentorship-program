@@ -11,19 +11,19 @@ export default function ViewProfile() {
     skills: "",
     interests: "",
     bio: "",
-    profileImage: null, // Stores the base64 image string or null
+    profileImage: null,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { username } = useParams(); // Get the username from the URL params
+  const { username } = useParams();
 
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
       try {
         // Make the request to the backend to fetch the profile data
-        const response = await axios.get(`http://localhost:5000/api/users/profile/${username}`, {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/profile/${username}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`, // Add token if needed
           },

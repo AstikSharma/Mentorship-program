@@ -11,8 +11,8 @@ export default function Profile() {
     role: "",
     skills: "",
     interests: "",
-    bio: "",  // Add bio to the state
-    profileImage: null, // Stores the base64 image string or null
+    bio: "",
+    profileImage: null, 
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,7 +23,7 @@ export default function Profile() {
     const fetchProfile = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/users/profile",
+          `${import.meta.env.VITE_BACKEND_URL}/profile`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -91,7 +91,7 @@ export default function Profile() {
 
       // Send PUT request to update the profile
       const response = await axios.put(
-        "http://localhost:5000/api/users/profile",
+        `${import.meta.env.VITE_BACKEND_URL}/profile`,
         formData,
         {
           headers: {
@@ -119,7 +119,7 @@ export default function Profile() {
     }
 
     try {
-      await axios.delete("http://localhost:5000/api/users/profile", {
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/profile`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       alert("Profile and account deleted successfully!");

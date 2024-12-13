@@ -24,7 +24,7 @@ export default function Home() {
       setLoading(true);
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/users/discover",
+          `${import.meta.env.VITE_BACKEND_URL}/discover`,
           {
             params: filters,
             headers: {
@@ -36,7 +36,7 @@ export default function Home() {
 
         // Fetch sent requests
         const requestsResponse = await axios.get(
-          "http://localhost:5000/api/users/connections/sent",
+          `${import.meta.env.VITE_BACKEND_URL}/connections/sent`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

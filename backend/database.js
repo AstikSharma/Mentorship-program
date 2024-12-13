@@ -7,13 +7,8 @@ const { Pool } = pkg;
 
 // Initialize PostgreSQL connection pool
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-  // Remove SSL or set it to false explicitly
-  ssl: false, // Explicitly disable SSL
+  connectionString: process.env.DATABASE_URL, 
+  ssl: { rejectUnauthorized: false },  
 });
 
 // Connect to the database
@@ -39,24 +34,54 @@ const createTables = async () => {
   `;
 
   const profilesTableQuery = `
-   CREATE TABLE IF NOT EXISTS profiles (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL UNIQUE,
-  about TEXT,
-  role VARCHAR(20),
-  skills TEXT,
-  interests TEXT,
-  bio TEXT,
-  profile_image BYTEA,
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+    CREATE TABLE IF NOT EXISTS profiles (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL UNIQUE,
+      about TEXT,
+      role VARCHAR(20),
+      skills TEXT,
+      interests TEXT,
+      bio TEXT,
+      profile_image BYTEA,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
   `;
 
-  await pool.query(usersTableQuery);
-  await pool.query(profilesTableQuery);  
+  const connectionsTableQuery = `
+    CREATE TABLE IF NOT EXISTS connections (
+      id SERIAL PRIMARY KEY,
+      requester_id INTEGER NOT NULL,
+      receiver_id INTEGER NOT NULL,
+      status VARCHAR(20) DEFAULT 'pending',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (requester_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+  `;
+
+  const notificationsTableQuery = `
+    CREATE TABLE IF NOT EXISTS notifications (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      message TEXT NOT NULL,
+      read BOOLEAN DEFAULT false,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+  `;
+
+  try {
+    await pool.query(usersTableQuery);
+    await pool.query(profilesTableQuery);
+    await pool.query(connectionsTableQuery);
+    await pool.query(notificationsTableQuery);
+    console.log('Tables created successfully');
+  } catch (error) {
+    console.error('Error creating tables:', error);
+  }
 };
 
-// Initialize the tables
+// Call the function to create the tables
 createTables();
 
 // Functions for profiles
