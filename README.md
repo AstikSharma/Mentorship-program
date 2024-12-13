@@ -105,9 +105,13 @@ Mentorship-program
 - **Frontend:** [[Deployed on Render](https://mentorship-program-1.onrender.com/)](#)
 - **Backend:** [[Deployed on Render](https://mentorship-program-av9z.onrender.com/)](#)
 - **GitHub Repository:** [Mentorship Program Repo](https://github.com/AstikSharma/Mentorship-program)
-
+-  
 ---
 
+## Note
+- Allow atleast 50 seconds for the initial request to get processed by the backend as the server becomes dormant after 30 minutes of inactivity.
+- This happens because of free tier hosting feature of render.
+   
 ## Future Enhancements
 - Advanced matching algorithm with machine learning.
 - Real-time chat functionality for mentors and mentees.
