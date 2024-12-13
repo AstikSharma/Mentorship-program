@@ -32,7 +32,6 @@ export default function Notifications() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      // Remove the notification from the local state
       setNotifications((prev) => prev.filter((notif) => notif.id !== id));
     } catch (error) {
       console.error("Error marking notification as read:", error);

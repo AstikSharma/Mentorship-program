@@ -36,17 +36,15 @@ export const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await addUser(username, email, hashedPassword);
 
-    // Generate and return a JWT token
     const token = jwt.sign(
       { id: newUser.id, username: newUser.username },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
-    // Automatically create an empty profile for the user
     await createProfile(newUser.id, {
       about: "",
-      role: "mentee", // Default role
+      role: "mentee", 
       skills: "",
       interests: "",
       bio: "",
@@ -135,7 +133,6 @@ export const getProfile = async (req, res) => {
 
     const profile = result.rows[0];
 
-    // Convert profile_image from BYTEA to base64
     if (profile.profile_image) {
       profile.profile_image = `data:image/jpeg;base64,${profile.profile_image.toString(
         "base64"
@@ -153,7 +150,7 @@ export const getProfile = async (req, res) => {
 export const editProfile = async (req, res) => {
   try {
     console.log("Request Body:", req.body);
-    console.log("Request File:", req.file); // This should be logged to check if file is present
+    console.log("Request File:", req.file);
 
     const { role, skills, interests, bio, about } = req.body;
     const profileImage = req.file ? req.file.buffer : null;
@@ -192,7 +189,7 @@ export const deleteProfileAndUser = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    await deleteProfile(userId); // This will also delete the profile due to foreign key constraint
+    await deleteProfile(userId);
     await pool.query("DELETE FROM users WHERE id = $1", [userId]);
 
     res.status(200).json({ message: "Profile and user deleted successfully" });
@@ -202,7 +199,6 @@ export const deleteProfileAndUser = async (req, res) => {
   }
 };
 
-// controllers.js
 export const getProfileImage = async (req, res) => {
   try {
     const query = `
@@ -221,7 +217,6 @@ export const getProfileImage = async (req, res) => {
 
     const profile = result.rows[0];
 
-    // Convert profile_image from BYTEA to base64
     if (profile.profile_image) {
       profile.profile_image = `data:image/jpeg;base64,${profile.profile_image.toString(
         "base64"
@@ -241,9 +236,8 @@ export const getProfileImage = async (req, res) => {
 export const discoverProfiles = async (req, res) => {
   try {
     const { role, skills, interests } = req.query;
-    const currentUserId = req.user.id; // Get the ID of the logged-in user
+    const currentUserId = req.user.id;
 
-    // Base query with INNER JOIN to fetch username and profile image
     let query = `
       SELECT 
         profiles.*, 
@@ -256,19 +250,16 @@ export const discoverProfiles = async (req, res) => {
     const params = [currentUserId];
     let index = 2;
 
-    // Filter by role
     if (role) {
       query += ` AND profiles.role = $${index++}`;
       params.push(role);
     }
 
-    // Filter by skills (case-insensitive partial match)
     if (skills) {
       query += ` AND profiles.skills ILIKE $${index++}`;
       params.push(`%${skills}%`);
     }
 
-    // Filter by interests (case-insensitive partial match)
     if (interests) {
       query += ` AND profiles.interests ILIKE $${index++}`;
       params.push(`%${interests}%`);
@@ -276,7 +267,6 @@ export const discoverProfiles = async (req, res) => {
 
     const result = await pool.query(query, params);
 
-    // Convert profile_image from BYTEA to base64 for each row
     const profiles = result.rows.map((row) => {
       if (row.profile_image) {
         row.profile_image = `data:image/jpeg;base64,${row.profile_image.toString("base64")}`;
@@ -284,7 +274,6 @@ export const discoverProfiles = async (req, res) => {
       return row;
     });
 
-    // Send results back to the client
     res.json(profiles);
   } catch (err) {
     console.error("Error fetching profiles:", err);
@@ -295,22 +284,21 @@ export const discoverProfiles = async (req, res) => {
 
 export const getUserProfile = async (req, res) => {
   try {
-    const { username } = req.params; // Get the username from the URL parameters
-    console.log("Requested username:", username); // Log the requested username
+    const { username } = req.params;
+    console.log("Requested username:", username); 
 
-    const profile = await getProfileByUsername(username); // Fetch the profile by username
-    console.log("Fetched profile:", profile); // Log the fetched profile
+    const profile = await getProfileByUsername(username);
+    console.log("Fetched profile:", profile);
 
     if (!profile) {
-      return res.status(404).json({ message: "Profile not found" }); // Return 404 if no profile found
+      return res.status(404).json({ message: "Profile not found" });
     }
 
-    // Convert profile_image from BYTEA to base64 for proper display in frontend
     if (profile.profile_image) {
       profile.profile_image = `data:image/jpeg;base64,${profile.profile_image.toString("base64")}`;
     }
 
-    res.json(profile); // Send the profile data in the response
+    res.json(profile);
   } catch (err) {
     console.error("Error fetching user profile:", err);
     res.status(500).json({ message: "Server error" });
@@ -333,7 +321,6 @@ export const sendConnectionRequest = async (req, res) => {
 
     const connection = await addConnectionRequest(requesterId, receiverId);
 
-    // Create a notification for the receiver
     const message = `You have received a connection request from ${req.user.username}.`;
     await createNotification(receiverId, message);
 
@@ -359,7 +346,6 @@ export const respondToConnectionRequest = async (req, res) => {
       return res.status(404).json({ message: "Connection request not found." });
     }
 
-    // Notify the sender if the request is accepted
     if (status === "accepted") {
       const senderId = connection.requester_id;
       const message = `${req.user.username} has accepted your connection request.`;
@@ -406,7 +392,7 @@ export const fetchNotifications = async (req, res) => {
       `,
       [req.user.id]
     );
-    res.json(notifications.rows); // Send only unread notifications
+    res.json(notifications.rows);
   } catch (error) {
     console.error("Error fetching notifications:", error);
     res.status(500).json({ message: "Server error" });
@@ -416,13 +402,13 @@ export const fetchNotifications = async (req, res) => {
 export const markAsRead = async (req, res) => {
   try {
     const notificationId = req.params.id;
-    const updatedNotification = await markNotificationAsRead(notificationId); // Calls the helper function
+    const updatedNotification = await markNotificationAsRead(notificationId);
 
     if (!updatedNotification) {
       return res.status(404).json({ message: "Notification not found." });
     }
 
-    res.json(updatedNotification); // Sends the updated notification back to the client
+    res.json(updatedNotification); 
   } catch (error) {
     console.error("Error marking notification as read:", error.message);
     res.status(500).json({ message: "Server error" });

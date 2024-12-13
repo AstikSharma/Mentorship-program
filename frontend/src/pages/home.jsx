@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Header from "../components/header";
 import axios from "axios";
 import MultiActionAreaCard from "../components/cards";
-import { useNavigate } from "react-router-dom"; // Use useNavigate for programmatic navigation
+import { useNavigate } from "react-router-dom"; 
 
 export default function Home() {
   const [profiles, setProfiles] = useState([]);
@@ -14,11 +14,10 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sentRequests, setSentRequests] = useState({});
-  const [showPopup, setShowPopup] = useState(false); // State for popup visibility
+  const [showPopup, setShowPopup] = useState(false);
 
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate();
 
-  // Fetch profiles on component mount or when filters change
   useEffect(() => {
     const fetchProfiles = async () => {
       setLoading(true);
@@ -28,13 +27,12 @@ export default function Home() {
           {
             params: filters,
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token for backend to identify the user
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
         );
         setProfiles(response.data);
 
-        // Fetch sent requests
         const requestsResponse = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/connections/sent`,
           {
@@ -45,13 +43,13 @@ export default function Home() {
         );
         const sentRequestsData = {};
         requestsResponse.data.forEach((req) => {
-          sentRequestsData[req.receiver_id] = true; // Mark sent requests
+          sentRequestsData[req.receiver_id] = true; 
         });
         setSentRequests(sentRequestsData);
         setLoading(false);
       } catch (err) {
         if (err.response?.status === 403) {
-          setShowPopup(true); // Show the popup for 403 errors
+          setShowPopup(true);
         } else {
           setError(err.response?.data?.message || "Failed to load profiles");
         }
@@ -62,7 +60,6 @@ export default function Home() {
     fetchProfiles();
   }, [filters]);
 
-  // Handle filter changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
@@ -74,7 +71,7 @@ export default function Home() {
 
   const handlePopupClose = () => {
     setShowPopup(false);
-    navigate("/signin"); // Redirect to signin page
+    navigate("/signin");
   };
 
   return (
@@ -161,7 +158,7 @@ export default function Home() {
                     key={profile.user_id}
                     profile={profile}
                     initialRequestSent={sentRequests[profile.user_id] || false}
-                    handleRedirect={handleRedirect} // Pass handleRedirect to the card
+                    handleRedirect={handleRedirect}
                   />
                 ))}
               </div>

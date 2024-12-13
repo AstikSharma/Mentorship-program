@@ -13,12 +13,10 @@ import ViewProfile from "./pages/viewprofile";
 import Notifications from "./components/notification";
 
 function App() {
-  // Initialize isAuthenticated based on localStorage
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return !!localStorage.getItem("token"); // Check if a token exists in localStorage
+    return !!localStorage.getItem("token"); 
   });
 
-  // Optional: Add a listener to handle token updates dynamically (e.g., logout)
   useEffect(() => {
     const handleStorageChange = () => {
       setIsAuthenticated(!!localStorage.getItem("token"));

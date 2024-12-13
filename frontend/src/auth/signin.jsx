@@ -27,9 +27,9 @@ function Signin({ setIsAuthenticated }) {
         password,
       });     
       localStorage.setItem("token", response.data.token);
-      setIsAuthenticated(true); // Update authentication state
+      setIsAuthenticated(true);
       setLoading(false);
-      navigate("/"); // Redirect to home
+      navigate("/");
     } catch (err) {
       setLoading(false);
 

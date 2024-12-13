@@ -52,7 +52,6 @@ export default function Header() {
             },
           }
         );
-        // Count unread notifications
         const unreadCount = response.data.filter((notif) => !notif.read).length;
         setNotificationsCount(unreadCount);
       } catch (error) {
@@ -64,8 +63,8 @@ export default function Header() {
   }, []);
 
   const handleSignOut = () => {
-    localStorage.removeItem("token"); // Remove token from localStorage
-    navigate("/signin"); // Redirect to sign-in page
+    localStorage.removeItem("token");
+    navigate("/signin");
   };
 
   return (

@@ -5,13 +5,11 @@ dotenv.config();
 
 const { Pool } = pkg;
 
-// Initialize PostgreSQL connection pool
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL, 
   ssl: { rejectUnauthorized: false },  
 });
 
-// Connect to the database
 export const connectDB = async () => {
   try {
     await pool.connect();
@@ -22,7 +20,6 @@ export const connectDB = async () => {
   }
 };
 
-// Create users and profiles table if they do not exist
 const createTables = async () => {
   const usersTableQuery = `
     CREATE TABLE IF NOT EXISTS users (
@@ -81,10 +78,9 @@ const createTables = async () => {
   }
 };
 
-// Call the function to create the tables
+
 createTables();
 
-// Functions for profiles
 export const getProfileByUserId = async (userId) => {
   const query = "SELECT * FROM profiles WHERE user_id = $1";
   const result = await pool.query(query, [userId]);
@@ -112,7 +108,6 @@ export const createProfile = async (userId, profileData) => {
 
 export const updateProfile = async (userId, profileData) => {
   try {
-    // Get the existing profile to preserve the profile_image if not updated
     const existingProfileQuery = "SELECT profile_image FROM profiles WHERE user_id = $1";
     const existingProfileResult = await pool.query(existingProfileQuery, [userId]);
 
@@ -132,7 +127,7 @@ export const updateProfile = async (userId, profileData) => {
       profileData.skills,
       profileData.interests,
       profileData.bio,
-      profileData.profileImage || existingProfileImage, // Use the new image if provided, otherwise retain the existing
+      profileData.profileImage || existingProfileImage,
     ];
     const result = await pool.query(query, values);
     return result.rows[0];
@@ -142,7 +137,6 @@ export const updateProfile = async (userId, profileData) => {
   }
 };
 
-// Function to fetch profile by username
 export const getProfileByUsername = async (username) => {
   const query = `
     SELECT 
@@ -156,10 +150,9 @@ export const getProfileByUsername = async (username) => {
     WHERE users.username = $1;
   `;
 
-  // Run the query with the username as the parameter
   const result = await pool.query(query, [username]);
 
-  return result.rows[0]; // Return the first profile result
+  return result.rows[0];
 };
 
 export const addUser = async (username, email, password) => {

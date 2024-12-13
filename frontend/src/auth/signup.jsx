@@ -16,7 +16,6 @@ function Signup() {
     e.preventDefault();
     setError(null);
   
-    // Validation
     if (!username || !email || !password || password.length < 6) {
       setError("Please provide a valid username, email, and a password with at least 6 characters.");
       return;
@@ -31,13 +30,11 @@ function Signup() {
         password,
       });
   
-      // Extract token from response
       const { token } = response.data;
   
-      // Store token in localStorage and redirect to /profile
       localStorage.setItem("token", token);
       setLoading(false);
-      navigate("/profile"); // Redirect to profile page after successful signup
+      navigate("/profile");
     } catch (err) {
       setLoading(false);
       const errorMessage = err.response?.data?.message;

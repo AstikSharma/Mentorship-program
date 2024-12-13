@@ -22,10 +22,9 @@ export default function ViewProfile() {
     const fetchProfile = async () => {
       setLoading(true);
       try {
-        // Make the request to the backend to fetch the profile data
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/profile/${username}`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Add token if needed
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
 
@@ -36,7 +35,7 @@ export default function ViewProfile() {
           skills: response.data.skills || "",
           interests: response.data.interests || "",
           bio: response.data.bio || "",
-          profileImage: response.data.profile_image || null, // Handle base64 image directly
+          profileImage: response.data.profile_image || null,
         });
 
         setLoading(false);
@@ -46,10 +45,9 @@ export default function ViewProfile() {
       }
     };
 
-    fetchProfile(); // Fetch profile when component mounts
+    fetchProfile();
 
-  }, [username]); // This hook runs whenever the username changes
-
+  }, [username]);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 

@@ -23,7 +23,7 @@ export default function MultiActionAreaCard({ profile, initialRequestSent, handl
           },
         }
       );
-      setRequestSent(true); // Mark the request as sent
+      setRequestSent(true);
     } catch (error) {
       console.error("Error sending connection request:", error);
       alert("Failed to send connection request.");

@@ -18,7 +18,6 @@ export default function Profile() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  // Fetch profile when component mounts
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -37,8 +36,8 @@ export default function Profile() {
           role: response.data.role || "",
           skills: response.data.skills || "",
           interests: response.data.interests || "",
-          bio: response.data.bio || "", // Add bio to state initialization
-          profileImage: response.data.profile_image || null, // Handle base64 image directly
+          bio: response.data.bio || "",
+          profileImage: response.data.profile_image || null,
         });
 
         setLoading(false);
@@ -77,19 +76,17 @@ export default function Profile() {
     try {
       const formData = new FormData();
 
-      // Append all fields except profileImage
       for (const key in profile) {
         if (key !== "profileImage" && profile[key] !== null) {
           formData.append(key, profile[key]);
         }
       }
 
-      // Append the profileImage only if a new file is uploaded
+
       if (profile.profileImage instanceof File) {
         formData.append("profileImage", profile.profileImage);
       }
 
-      // Send PUT request to update the profile
       const response = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/profile`,
         formData,
@@ -124,7 +121,7 @@ export default function Profile() {
       });
       alert("Profile and account deleted successfully!");
       localStorage.removeItem("token");
-      window.location.href = "/signup"; // Redirect to signup after deletion
+      window.location.href = "/signup"; 
     } catch (err) {
       setError(
         err.response?.data?.message || "Failed to delete profile and account"
